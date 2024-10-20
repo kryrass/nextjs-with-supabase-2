@@ -1,0 +1,29 @@
+services:
+  db:
+    image: supabase/postgres:aio-15.1.1.95
+    environment:
+      POSTGRES_USER: superuser1
+      POSTGRES_PASSWORD: SuperPassword1
+      POSTGRES_DB: PostgresDatabase
+    ports:
+      - "54326:5432"
+
+  supabase:
+    image: supabase/gotrue:v2.163.0-rc.5
+    depends_on:
+      - db
+    environment:
+      GOTRUE_API_KEY: ${GOTRUE_API_KEY}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://superuser1:SuperPassword1@db:5432/PostgresDatabase
+      GOTRUE_SITE_URL: http://localhost:54327
+      ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      API_EXTERNAL_URL: http://localhost:54327
+      GOTRUE_DB_DRIVER: ${GOTRUE_DB_DRIVER}
+
+  studio:
+    image: supabase/studio:latest
+    ports:
+      - "54323:3000"
+    depends_on:
+      - db
