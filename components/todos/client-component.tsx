@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
+import { useUser } from "./context/userContext"; 
 
 interface Todo {
     id: string;
@@ -17,6 +18,7 @@ export default function ClientTodoComponent() {
     const [priority, setPriority] = useState<number>(1);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const supabase = createClient();
+    const user = useUser();
 
     useEffect(() => {
         const getTodos = async () => {
@@ -95,10 +97,11 @@ export default function ClientTodoComponent() {
         <div>
             <h2 className="text-2xl font-bold mb-4">Client Todos</h2>
             {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+            {user ? <div>Tere, {user.name}!</div> : <div>Laeb kasutajaid...</div>}
 
             <ul className="list-disc pl-5 mb-4">
                 {todos.length === 0 ? (
-                    <li>Client todosi ei leitud.</li>
+                    <li>Ei leitud kliendi todosi.</li>
                 ) : (
                     todos.map(todo => (
                         <li key={todo.id} className="py-1 flex justify-between items-center">
